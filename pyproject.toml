@@ -1,0 +1,30 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-point-in-time"
+version = "1.0.0"
+description = "Add version history to your Django models with Point in Time Architecture (type 2 slowly changing dimensions)"
+readme = "README.md"
+authors = [{ name = "Erik Umble", email = "erikumble@gmail.com" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["django", "version", "tracking", "PTA"]
+dependencies = [
+    "django >= 4.0.9"
+]
+
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = ["black", "pytest", "pytest-django", "factory-boy]
+
+[project.urls]
+Homepage = 
