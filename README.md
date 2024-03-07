@@ -127,7 +127,7 @@ class MyViewSet(PointInTimeModelViewSet):
             return qs.filter(modified_by__id=self.request.data.get("author"))
         return qs
 ```
-If filter_queryset will be passed a queryset of model_class objects and should return a queryset just as get_queryset usually does. 
+Note that filter_queryset will be passed a queryset of model_class objects and should return a queryset just as get_queryset usually does. 
 
 The PointInTimeModelViewSet comes with several useful functionalities built-in:
 - any GET request can specify active_at and/or version_at url arguments to respectively query the model.
