@@ -18,13 +18,14 @@ classifiers = [
 ]
 keywords = ["django", "version", "tracking", "PTA"]
 dependencies = [
-    "django >= 4.0.9"
+    "django >= 4.0.9",
 ]
 
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
+drf = ["djangorestframework"]
 dev = ["black", "pytest", "pytest-django", "factory-boy]
 
 [project.urls]
-Homepage = 
+Homepage = "https://github.com/ErikUmble/django-pita"

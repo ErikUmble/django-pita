@@ -619,7 +619,3 @@ class PITATransactionMixin:
 
     def _delete(self, *args, **kwargs):
         return super().delete()
-
-
-
-
