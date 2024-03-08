@@ -25,7 +25,8 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 drf = ["djangorestframework"]
-dev = ["black", "pytest", "pytest-django", "factory-boy]
+dev = ["black", "pytest", "pytest-django", "factory-boy"]
+
 
 [project.urls]
 Homepage = "https://github.com/ErikUmble/django-pita"

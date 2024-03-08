@@ -25,6 +25,8 @@ You can install Django PITA using pip:
 pip install django-pita
 ```
 
+This has been tested on a Postgres database and should work on MySQL, but sqlite is not recommended as it does not support the constraints used by PointInTimeModels. 
+
 ## Usage
 ```python
 from django.utils import timezone

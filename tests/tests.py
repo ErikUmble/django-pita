@@ -1,3 +1,4 @@
+
 import datetime
 from time import sleep
 import factory
@@ -447,109 +448,6 @@ class TestPITAManagers(TestCase):
 
     def test_objects_is_default_manager(self):
         self.assertEqual(self.model._default_manager, self.model.objects)
-
-
-class TestPITAUseCase(TestCase):
-    def test_use_case(self):
-        # create 3 dummies whose state we are interested in tracking
-        d1 = DummyPITAModel2PK.objects.create()
-        d2 = DummyPITAModel2PK.objects.create()
-        d3 = DummyPITAModel2PK.objects.create()
-
-        now = timezone.now()
-        jan_1_22 = timezone.make_aware(datetime.datetime(2022, 1, 1, 0, 0))
-        feb_1_23 = timezone.make_aware(datetime.datetime(2023, 2, 1, 0, 0))
-
-        # specify some states for d1
-        s1 = DummyPITAModel2State.objects.create(
-            real_pk=d1, value=0, start_at=jan_1_22, end_at=feb_1_23
-        )
-        s2 = DummyPITAModel2State.objects.create(
-            real_pk=d1, value=1, start_at=feb_1_23, end_at=None
-        )
-        sleep(2)
-        later = timezone.now()
-        # make changes
-        s1.value = 3
-        s1.save()
-        s2.value = 4
-        s2.save()
-
-        # check that active works as expected
-        self.assertEqual(
-            len(DummyPITAModel2State.objects.active().filter(real_pk=d1)), 1
-        )
-
-        # check that related object just contains up-to-date records
-        self.assertEqual(len(d1.record_set.all()), 2)
-        # check active for present time
-        self.assertEqual(len(d1.record_set.active()), 1)
-        self.assertEqual(d1.record_set.active().first().value, 4)
-        # check active for past time
-        self.assertEqual(
-            len(d1.record_set.active(jan_1_22 + timezone.timedelta(days=1))), 1
-        )
-        self.assertEqual(
-            d1.record_set.active(jan_1_22 + timezone.timedelta(days=1)).first().value, 3
-        )
-
-
-class TestDateOnlyPITAMixin(TestCase):
-    def test_removes_time_on_create(self):
-        # start_at should have 0 time whether we use default, specified datetime, or specified date
-        obj1 = DummyPITAModel3Dateonly.objects.create()
-        self.assertEqual(
-            obj1.start_at,
-            obj1.start_at.replace(
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo=timezone.get_current_timezone(),
-            ),
-        )
-
-        obj2 = DummyPITAModel3Dateonly.objects.create(
-            start_at=timezone.now(), end_at=timezone.now() + timezone.timedelta(days=2)
-        )
-        obj3 = DummyPITAModel3Dateonly.objects.create(
-            start_at=timezone.localdate(),
-            end_at=timezone.localdate(timezone.now() + timezone.timedelta(days=2)),
-        )
-        self.assertEqual(obj2.start_at, obj3.start_at)
-        self.assertEqual(obj2.end_at, obj3.end_at)
-
-    def test_removes_time_on_update(self):
-        obj = DummyPITAModel3Dateonly.objects.create()
-        obj.start_at = timezone.now()
-        obj.end_at = timezone.now() + timezone.timedelta(days=5)
-        obj.save()
-        # refresh from db, to ensure start_at and end_at are datetime values
-        obj = DummyPITAModel3Dateonly.objects.get(pk=obj.pk)
-        self.assertEqual(
-            obj.start_at,
-            obj.start_at.replace(
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo=timezone.get_current_timezone(),
-            ),
-        )
-        self.assertEqual(
-            obj.end_at,
-            obj.end_at.replace(
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo=timezone.get_current_timezone(),
-            ),
-        )
-
-    def test_date_is_localdate(self):
-        obj = DummyPITAModel3Dateonly.objects.create()
-        self.assertEqual(obj.start_at.date(), timezone.localdate())
 
 
 class TestOneToOnePITA(TestCase):

@@ -150,12 +150,12 @@ class PointInTimeDefaultManager(models.Manager):
         """
         return self.get_queryset()
 
-    def active(self, time=None):
+    def active(self, active_at=None):
         """
         Returns the most up-to-date version of objects that were active as of time.
         Note that a deleted object is considered out of date (inacurrate) for all time, and will not be returned
         """
-        return self.get_queryset().active(time)
+        return self.get_queryset().active(active_at)
 
     def copy(self, pk, exclude=()):
         """
@@ -580,27 +580,6 @@ class TransactionBasedModelManagerMixin:
                 modified_by=kwargs.get("modified_by")
             )
         return super().create(*args, **kwargs, transaction_id=transaction.id)
-
-
-class TransactionModel(models.Model):
-    """
-    When a user's single decision creates multiple of the same object, it can be helpful
-    to group those objects in case that decision should be changed to analyzed.
-    Create a subclass of TransactionModel for each model which needs to track transactions.
-    When a decision is made, create a transaction object with the timestamp and user id and
-    pass in that object in the creation of each of the regular model objects.
-    It is best to make the ForeignKey to a transaction model as a on_delete=CASCADE so that
-    deleting the transaction is enough to delete each object part of it.
-
-    Modifying a transaction object is untypical; not recommended.
-    If the transaction model is for a PITA model, it is recommended to use the PITATransactionMixin
-    """
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_by = models.ForeignKey(
-        get_user_model(), on_delete=models.PROTECT, verbose_name="Last Modified By"
-    )
-
 
 class PITATransactionMixin:
     """

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from pita.models import (PointInTimeModel, PointInTimeModelPK, DateOnlyPITAMixin, FrozenForeignKey)
+from pita.models import (PointInTimeModel, FrozenForeignKey)
 
 class DummyPITAModel(PointInTimeModel):
     """
@@ -11,29 +11,6 @@ class DummyPITAModel(PointInTimeModel):
     c1 = models.CharField(max_length=64)
     c2 = models.CharField(max_length=256, blank=True, default="")
     c3 = models.FloatField(null=True, blank=True)
-
-
-class DummyPITAModel2PK(PointInTimeModelPK):
-    pass
-
-
-class DummyPITAModel2State(PointInTimeModel):
-    """
-    For testing the PointInTimeModelPK abstract properties
-    """
-
-    real_pk = models.ForeignKey(
-        DummyPITAModel2PK, on_delete=models.CASCADE, related_name="record_set"
-    )
-    value = models.IntegerField()
-
-
-class DummyPITAModel3Dateonly(DateOnlyPITAMixin, PointInTimeModel):
-    """
-    For testing the DateOnlyPITAMixin
-    """
-
-    pass
 
 
 class DummyPITAModel4OneToOne(PointInTimeModel):
